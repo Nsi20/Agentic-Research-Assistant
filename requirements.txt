@@ -1,0 +1,25 @@
+# Core agent / AI packages
+crewai
+crewai-tools
+tavily-python
+langchain
+langchain-openai
+langchain-groq
+langchain-huggingface
+langchain-chroma
+
+# Environment variables / API keys
+python-dotenv
+requests
+
+# Optional web scraping tools (only if you use them)
+beautifulsoup4
+
+# Vector database (for document retrieval / embeddings)
+chromadb
+faiss-cpu
+
+# Utilities
+pandas
+numpy
+streamlit
