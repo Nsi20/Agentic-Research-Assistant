@@ -36,15 +36,32 @@ resources = get_resources()
 with st.sidebar:
     st.header("Configuration")
     
-    # Model Selection
+    # Model Selection - only show available models based on API keys
     current_model = os.getenv("LLM_MODEL", "groq/llama-3.1-8b-instant")
-    model_options = [
-        "groq/llama-3.1-8b-instant",
-        "groq/llama3-70b-8192",
-        "groq/mixtral-8x7b-32768",
-        "openai/gpt-4o",
-        "openai/gpt-4-turbo"
-    ]
+    
+    # Build available models list based on API keys
+    model_options = []
+    if os.getenv("GROQ_API_KEY"):
+        model_options.extend([
+            "groq/llama-3.1-8b-instant",
+            "groq/llama3-70b-8192",
+            "groq/mixtral-8x7b-32768",
+        ])
+    if os.getenv("OPENAI_API_KEY"):
+        model_options.extend([
+            "openai/gpt-4o",
+            "openai/gpt-4-turbo"
+        ])
+    if os.getenv("GOOGLE_API_KEY"):
+        model_options.extend([
+            "gemini/gemini-1.5-flash",
+            "gemini/gemini-1.5-pro",
+        ])
+    
+    # Fallback if no API keys configured
+    if not model_options:
+        st.warning("⚠️ No API keys configured! Please set GROQ_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY in your .env file")
+        model_options = ["groq/llama-3.1-8b-instant"]  # Default fallback
     
     # Add current model if not in options
     if current_model not in model_options:
@@ -53,7 +70,7 @@ with st.sidebar:
     selected_model = st.selectbox(
         "Select LLM Model",
         options=model_options,
-        index=model_options.index(current_model)
+        index=model_options.index(current_model) if current_model in model_options else 0
     )
     
     # Update env var for this session (Note: this affects the process env)
